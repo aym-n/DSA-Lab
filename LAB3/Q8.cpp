@@ -1,5 +1,4 @@
 // Implement the radix sort algorithm to sort an array of positive integers in ascending order.
-// Modify the radix sort implementation to sort an array of strings in lexicographical order.
 
 #include<iostream>
 
@@ -8,42 +7,87 @@ using namespace std;
 int getMax(int arr[], int n){
     int max = arr[0];
     for(int i = 1; i < n; i++){
-        if(arr[i] > max) max = arr[i];
+        if(arr[i] > max){
+            max = arr[i];
+        }
     }
     return max;
 }
 
-void countingSort(int arr[], int size, int place){
-    int output[size];
+void countingSort(int arr[], int n, int exp){
+    int output[n];
     int count[10] = {0};
-
-    for(int i = 0; i < size; i++) count[arr[i] / place % 10]++;
-    int position = 0;
-    for(int i = 0; i < 10; i++){
-        while(count[i] > 0){
-            output[position] = i;
-            count[i]--;
-            position++;
-        }
+    for(int i = 0; i < n; i++){
+        count[(arr[i] / exp) % 10]++;
     }
-
-    for(int i = 0; i < size; i++) arr[i] = output[i];
+    for(int i = 1; i < 10; i++){
+        count[i] += count[i - 1];
+    }
+    for(int i = n - 1; i >= 0; i--){
+        output[count[(arr[i] / exp) % 10] - 1] = arr[i];
+        count[(arr[i] / exp) % 10]--;
+    }
+    for(int i = 0; i < n; i++){
+        arr[i] = output[i];
+    }
 }
 
 void radixSort(int arr[], int n){
     int max = getMax(arr, n);
-    int place = 0;
-    while(max > 0){
-        countingSort(arr, n, ++place);
-        max /= 10;
+    for(int exp = 1; max / exp > 0; exp *= 10){
+        countingSort(arr, n, exp);
+    }
+}
+
+// Radix Sort for array of strings
+
+void countingSort(string arr[], int n, int exp){
+    string output[n];
+    int count[256] = {0};
+    for(int i = 0; i < n; i++){
+        count[arr[i][exp]]++;
+    }
+    for(int i = 1; i < 256; i++){
+        count[i] += count[i - 1];
+    }
+    for(int i = n - 1; i >= 0; i--){
+        output[count[arr[i][exp]] - 1] = arr[i];
+        count[arr[i][exp]]--;
+    }
+    for(int i = 0; i < n; i++){
+        arr[i] = output[i];
+    }
+}
+
+void radixSort(string arr[], int n){
+    int max = arr[0].length();
+    for(int i = 1; i < n; i++){
+        if(arr[i].length() > max){
+            max = arr[i].length();
+        }
+    }
+    for(int exp = max - 1; exp >= 0; exp--){
+        countingSort(arr, n, exp);
     }
 }
 
 int main(){
-    int arr[] = {12, 15, 95 , 21, 15, 52, 65, 91, 11, 25};
-    int size = sizeof(arr)/sizeof(arr[0]);
-    countingSort(arr, size, 2);
+    int arr[] = {170, 45, 75, 90, 802, 24, 2, 66};
+    int size = sizeof(arr) / sizeof(arr[0]);
+    radixSort(arr, size);
+    for(int i = 0; i < size; i++){
+        cout << arr[i] << " ";
+    }
+    cout << endl;
 
-    for(int i = 0; i < size; i++) cout<<arr[i]<<" ";
+    string arr2[] = {"ayman", "makroo", "apple"};
+    // only valid if all strings have same length
+    int size2 = sizeof(arr2) / sizeof(arr2[0]);
+    radixSort(arr2, size2);
+    for(int i = 0; i < size2; i++){
+        cout << arr2[i] << " ";
+    }
+    cout << endl;
+
     return 0;
 }
