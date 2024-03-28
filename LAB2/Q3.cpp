@@ -177,5 +177,6 @@ int main(){
         }else if(choice == 8){
             break;
         }
+    }
 }
 
