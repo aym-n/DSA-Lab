@@ -1,42 +1,40 @@
-// Given a list of people's heights and the number of people in front of each person who have a
-// height greater than or equal to theirs, reconstruct the queue to arrange the people based on
-// non-decreasing order of their height.
-
 #include <iostream>
 #include <bits/stdc++.h>
 
 using namespace std;
 
 int main(){
+    queue<int> q1, q2;
     int n;
-    cout<<"Enter the number of people: ";
+    cout<<"Enter the number of elements in the queue: ";
     cin>>n;
 
-    queue<int> q;
-    queue<int>buffer;
+    for(int i = 0; i < n; i++){
+        int x;
+        cout<<"Enter element "<<i+1<<": ";
+        cin>>x;
 
-    for(int i=0; i<n; i++){
-        int height, infront;
-        cout<<"Enter the height of person "<<i+1<<": ";
-        cin>>height;
-
-        while(q.size() && q.front() < height){
-            buffer.push(q.front());
-            q.pop();
+        while(!q1.empty() && q1.front() < x){
+            q2.push(q1.front());
+            q1.pop();
         }
 
-        q.push(height);
+        q2.push(x);
 
-        while(buffer.size()){
-            q.push(buffer.front());
-            buffer.pop();
+        while(!q1.empty()){
+            q2.push(q1.front());
+            q1.pop();
         }
+
+        while(!q2.empty()){
+            cout<<q2.front()<<" ";
+            q1.push(q2.front());
+            q2.pop();
+        }
+
+        cout<<endl;
     }
 
-    cout<<"The queue is: ";
-    while(q.size()){
-        cout<<q.front()<<" ";
-        q.pop();
-    }
     return 0;
+
 }
